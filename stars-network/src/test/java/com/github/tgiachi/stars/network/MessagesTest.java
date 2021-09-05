@@ -17,7 +17,9 @@ class MessagesTest {
     void compressMessage() throws Exception {
        var pingMessage = PingMessageRequest
                .builder().ping(true).build();
-        var udpMessage = NetworkMessageBuilder.buildMessage(pingMessage);
+        var udpMessage = NetworkMessageBuilder.buildMessageString(pingMessage);
+
+
 
         Assert.assertNotNull(udpMessage);
     }

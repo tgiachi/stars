@@ -1,6 +1,7 @@
 package com.github.tgiachi.stars.network.builders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tgiachi.stars.network.base.BaseMessage;
 import com.github.tgiachi.stars.network.base.UdpNetworkMessage;
 
 import java.io.ByteArrayOutputStream;
@@ -21,6 +22,18 @@ public class NetworkMessageBuilder {
                 .messageTypeClass(message.getClass().getName())
                 .data(byteMessage)
                 .build();
+    }
+    public static  <T extends Serializable> String buildMessageString(T message) throws Exception
+    {
+        return objectMapper.writeValueAsString(buildMessage(message));
+    }
+
+    public static UdpNetworkMessage parseMessage(String message) throws  Exception {
+        var udpMessage = objectMapper.readValue(message, UdpNetworkMessage.class);
+        udpMessage.setData(Base64.getDecoder().decode(udpMessage.getData()));
+        udpMessage.setData(decompress(udpMessage.getData()));
+
+        return udpMessage;
     }
 
     public static byte[] compress(byte[] in) {
