@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+}
+
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+allprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(javaVersion)
+        }
+    }
+
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+
+
+
+        testImplementation 'junit:junit:4.13.1'
+
+
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+        testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+        testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    }
+}
