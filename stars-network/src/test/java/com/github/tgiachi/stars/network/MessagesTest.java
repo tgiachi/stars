@@ -15,12 +15,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class MessagesTest {
     @Test
     void compressMessage() throws Exception {
-       var pingMessage = PingMessageRequest
-               .builder().ping(true).build();
+        var pingMessage = PingMessageRequest
+                .builder().ping(true).build();
         var udpMessage = NetworkMessageBuilder.buildMessageString(pingMessage);
 
+        var parsedMessage = NetworkMessageBuilder.parseMessage(udpMessage);
 
+        var msg = NetworkMessageBuilder.convertFromUdpMessage(parsedMessage);
 
+        Assert.assertNotNull(msg);
         Assert.assertNotNull(udpMessage);
+
     }
 }

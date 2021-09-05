@@ -6,34 +6,40 @@ import com.github.tgiachi.stars.network.base.UdpNetworkMessage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterOutputStream;
 
 public class NetworkMessageBuilder {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    public static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static <T extends Serializable> UdpNetworkMessage buildMessage(T message) throws Exception {
-        var byteMessage= objectMapper.writeValueAsBytes(message);
+        var byteMessage = objectMapper.writeValueAsBytes(message);
         byteMessage = compress(byteMessage);
-        byteMessage =  Base64.getEncoder().encode(byteMessage);
+        byteMessage = Base64.getEncoder().encode(byteMessage);
 
         return UdpNetworkMessage.builder()
                 .messageTypeClass(message.getClass().getName())
                 .data(byteMessage)
                 .build();
     }
-    public static  <T extends Serializable> String buildMessageString(T message) throws Exception
-    {
+
+    public static <T extends Serializable> String buildMessageString(T message) throws Exception {
         return objectMapper.writeValueAsString(buildMessage(message));
     }
 
-    public static UdpNetworkMessage parseMessage(String message) throws  Exception {
+    public static UdpNetworkMessage parseMessage(String message) throws Exception {
         var udpMessage = objectMapper.readValue(message, UdpNetworkMessage.class);
         udpMessage.setData(Base64.getDecoder().decode(udpMessage.getData()));
         udpMessage.setData(decompress(udpMessage.getData()));
 
         return udpMessage;
+    }
+
+    public static <T extends BaseMessage> T convertFromUdpMessage(UdpNetworkMessage message) throws Exception {
+        var classz = Class.forName(message.getMessageTypeClass());
+        return (T) objectMapper.readValue(new String(message.getData(), StandardCharsets.UTF_8), classz);
     }
 
     public static byte[] compress(byte[] in) {
