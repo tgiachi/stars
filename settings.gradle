@@ -9,4 +9,4 @@
 
 
 rootProject.name = 'stars-parent'
-include("stars-network")
+include("stars-network", "stars-server")

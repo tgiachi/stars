@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.UUID;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterOutputStream;
 
@@ -22,6 +23,7 @@ public class NetworkMessageBuilder {
         return UdpNetworkMessage.builder()
                 .messageTypeClass(message.getClass().getName())
                 .data(byteMessage)
+                .uuid(UUID.randomUUID().toString())
                 .build();
     }
 
